@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Lato", sans-serif;
+  }
+
+  :root {
+    --brand: 34 197 94;
+  }
+}
+
+@layer utilities {
+  .bg-hero-gradient {
+    background: linear-gradient(90deg, #e6d8ff 0%, #c7f7ff 100%);
+  }
+}
