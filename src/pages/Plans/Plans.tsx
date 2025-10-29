@@ -7,14 +7,17 @@ import { getAge } from "../../utils/getAge";
 import ChoiceCard from "./components/ChoiceCard";
 import PlanCard from "./components/PlanCard";
 
+const DISCOUNT = 0.05;
+
 export default function Plans() {
   const { data: user, loading } = useUser();
   const [selected, setSelected] = useState<"me" | "other" | null>(null);
   const { plans, loading: plansLoading } = usePlans(!!selected);
 
-  // +++ NUEVO
   const navigate = useNavigate();
   const { setData } = useQuote();
+
+  const isOther = selected === "other";
 
   const userAge = useMemo(() => (user ? getAge(user.birthDay) : 0), [user]);
   const filteredPlans = useMemo(
@@ -29,7 +32,19 @@ export default function Plans() {
     return filteredPlans.slice().sort((a, b) => b.price - a.price)[0].name;
   }, [filteredPlans]);
 
-  // +++ NUEVO: cuando el usuario elige “Para mí / Para alguien más”, persiste en Context
+  const pricedPlans = useMemo(() => {
+    return filteredPlans.map((p) => {
+      const priceFinal = isOther
+        ? Number((p.price * (1 - DISCOUNT)).toFixed(2))
+        : p.price;
+      return {
+        ...p,
+        priceFinal,
+        priceOriginal: isOther ? p.price : undefined,
+      };
+    });
+  }, [filteredPlans, isOther]);
+
   const handleChoice = (who: "me" | "other") => {
     setSelected(who);
     setData({ quoteFor: who });
@@ -38,27 +53,29 @@ export default function Plans() {
   return (
     <div className='min-h-screen bg-[#F7F8FC] font-lato px-4 py-8'>
       <div className='max-w-5xl mx-auto text-center'>
-        <h1 className='text-[32px] font-extrabold text-[#0B0B0B]'>
+        <h1 className='text-[28px] font-[700] text-[#0B0B0B] leading-[48px] tracking-[-0.6px] sm:px-40'>
           {loading
             ? "Cargando..."
             : `${user?.name ?? ""} ¿Para quién deseas cotizar?`}
         </h1>
-        <p className='text-[#6B7280] mt-2'>
+        <p className='text-[#141938] font-[400] text-[16px] leading-5 tracking-[0.2px] mt-2'>
           Selecciona la opción que se ajuste más a tus necesidades.
         </p>
 
-        <div className='mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 justify-center'>
+        <div className='mt-10 mb-10 grid grid-cols-1 md:grid-cols-2 gap-6 justify-center px-6 sm:px-10'>
           <ChoiceCard
             title='Para mí'
             desc='Cotiza tu seguro de salud y agrega familiares si así lo deseas.'
             selected={selected === "me"}
             onSelect={() => handleChoice("me")}
+            src='/IcProtectionLight.png'
           />
           <ChoiceCard
             title='Para alguien más'
             desc='Realiza una cotización para uno de tus familiares o cualquier persona.'
             selected={selected === "other"}
             onSelect={() => handleChoice("other")}
+            src='/IcAddUserLight.png'
           />
         </div>
 
@@ -70,16 +87,26 @@ export default function Plans() {
             {plansLoading ? (
               <p>Cargando planes...</p>
             ) : (
-              <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-                {filteredPlans.map((plan) => (
+              <div className='grid grid-cols-1 lg:grid-cols-3 mt-10 mb-10 md:grid-cols-2 gap-6 justify-center px-6 sm:px-10'>
+                {pricedPlans.map((plan) => (
                   <PlanCard
                     key={plan.name}
-                    {...plan}
+                    name={plan.name}
+                    price={plan.priceFinal}
+                    originalPrice={plan.priceOriginal}
+                    description={plan.description}
                     recommended={plan.name === recommendedName}
-                    // +++ NUEVO: al elegir plan -> persistir y navegar
+                    src={
+                      plan.name.includes("Clínica")
+                        ? "/IcHospitalLight.png"
+                        : "/IcHomeLight.png"
+                    }
                     onSelect={() => {
                       setData({
-                        selectedPlan: { name: plan.name, price: plan.price },
+                        selectedPlan: {
+                          name: plan.name,
+                          price: plan.priceFinal,
+                        },
                       });
                       navigate("/resumen");
                     }}

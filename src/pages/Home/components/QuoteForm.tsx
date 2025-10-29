@@ -184,7 +184,7 @@ export default function QuoteForm() {
       <button
         type='submit'
         disabled={isSubmitting}
-        className='mt-2 rounded-full bg-[#03050F] text-white px-6 py-3 font-bold text-[14px] leading-[20px] tracking-[0.2px] hover:bg-[#10122B] disabled:opacity-60'
+        className={`w-full mt-4 rounded-full bg-[#03050F] text-white text-[16px] leading-[20px] font-extrabold tracking-[0.2px] py-4 transition-all duration-200 hover:bg-[#10122B] active:scale-[0.98] disabled:opacity-60`}
       >
         {isSubmitting ? "Procesando..." : "Cotiza aquí"}
       </button>
