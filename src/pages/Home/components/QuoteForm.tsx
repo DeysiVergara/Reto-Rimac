@@ -11,6 +11,8 @@ export default function QuoteForm() {
   const navigate = useNavigate();
   const { data, setData } = useQuote();
 
+  console.log(data);
+
   const {
     register,
     handleSubmit,
@@ -39,9 +41,7 @@ export default function QuoteForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='mt-6 space-y-3'>
-      {/* Tipo y número de documento */}
       <div className='grid grid-cols-3 gap-3'>
-        {/* Tipo */}
         <div className='col-span-1'>
           <select
             {...register("docType")}
@@ -59,7 +59,6 @@ export default function QuoteForm() {
           )}
         </div>
 
-        {/* Número */}
         <div className='col-span-2'>
           <input
             {...register("docNumber")}

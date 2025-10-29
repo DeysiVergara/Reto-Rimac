@@ -1,6 +1,7 @@
 type StepperProps = { current: 1 | 2 };
 
 export default function Stepper({ current }: StepperProps) {
+  console.log(current);
   return (
     <div className='w-full bg-[#EEF0FF] text-[#141938] flex justify-center'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center gap-4 text-sm'>
