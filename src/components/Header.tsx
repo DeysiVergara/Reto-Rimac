@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 export type NavItem = { label: string; to: string; external?: boolean };

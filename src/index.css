@@ -17,10 +17,3 @@
     background: linear-gradient(90deg, #e6d8ff 0%, #c7f7ff 100%);
   }
 }
-
-.login__left {
-  width: 100%;
-  max-width: 480px;
-  border-radius: 20px;
-  overflow: hidden;
-}
